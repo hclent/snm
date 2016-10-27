@@ -53,14 +53,24 @@ print xCap
 fig = plt.figure()
 ax = fig.add_subplot(121, projection = '3d')
 ax.scatter(xCap[:,0],xCap[:,1],xCap[:,2], color = 'rrbbb')
-ax = fig.add_subplot(122)
+##limit = 1
+##ax.set_xlim(-limit, limit)
+##ax.set_ylim(-limit, limit)
+##ax.set_zlim(-limit, limit)
+ax.set_xlabel('x1')
+ax.set_ylabel('x2')
+ax.set_zlabel('x3')
 
+
+ax = fig.add_subplot(122)
 ax.scatter(xCap[:,0],xCap[:,1], color='rrbbb')
 ax.axis('square')
+
 
 names = genomeInfo['name']
 for pt,gID in zip(xCap, genomeIDs):
     ax.text(pt[0],pt[1],names[gID])
+
 
 ##plt.savefig("test.svg")
 plt.show()
