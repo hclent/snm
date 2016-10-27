@@ -42,34 +42,51 @@ def kernel1(KS, sigma=1):
     return np.sum(W * k(KS, sigma))
 
 
-def kernel2(df, sigma=1):
-    n,m = len(set(df[1])), len(set(df[2]))
-    return np.sum(k(df[0], sigma)/(m*n))
+def kernel2(df, sigma=1, geneCount1 = None, geneCount2 = None):
+    if geneCount1 is None:
+        geneCount1 = len(set(df[1])) or 1
+    if geneCount2 is None:
+        geneCount2 = len(set(df[2])) or 1
+        
+    return np.sum(k(df[0], sigma)/(geneCount1*geneCount2)**0.5)
 
 
-def kernel3(filename, sigma=1):
-    df = pd.read_csv(filename,
-                    header = None,
-                    sep = '\t',
-                    )
-    return kernel2(df, sigma)
+def kernel3(ksfile, sigma=1):
+    try:
+        df = pd.read_csv(ksfile,
+                        header = None,
+                        sep = '\t',
+                        )
+    except pd.io.common.EmptyDataError:
+        return 0
+    
+    g1, g2 = ksfile.split('/')[-1].split('.')[0].split('_')
+    g1, g2 = int(g1), int(g2)
+    print g1,g2
+    genomeInfo = pd.read_csv('ks/geneCount.txt',
+                             index_col = 'id')
+    g1Count = genomeInfo['geneCount'][g1]
+    g2Count = genomeInfo['geneCount'][g2]
+    print g1Count,g2Count 
+    return kernel2(df, sigma, g1Count, g2Count)
 
 ########################################################
 #### read ks.txt
 
 if __name__ == '__main__':
-    print kernel('ks/ksBB.txt')
-    
-    
-    
-    df = pd.read_csv('ks/ksBB.txt',
-                    header = None,
-                    sep = '\t',
-                    )
-    print kernel(df)
-
-    KS = buildMatrix(df)
-    print kernel(KS)
+    print kernel3('ks/cleaned/11691_7057.ks')
+##    print kernel('ks/ksBB.txt')
+##    
+##    
+##    
+##    df = pd.read_csv('ks/ksBB.txt',
+##                    header = None,
+##                    sep = '\t',
+##                    )
+##    print kernel(df)
+##
+##    KS = buildMatrix(df)
+##    print kernel(KS)
     
     
 

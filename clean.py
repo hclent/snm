@@ -1,28 +1,49 @@
 from glob import glob
 
-for filename in glob('ks/fasta/*.fasta'):
-    with open(filename) as f:
-        f.seek(-5555,2)
-        print filename
-        print 'gene count:',
-        print f.readlines()[-2].split('||')[-1]
-        
-##for filename in glob('ks/real/*.ks'):
-##    
-##    if '11691' in filename or '7057' in filename\
-##    or '28918' in filename or '25571' in filename:
-##        
-##        saveName = 'ks/cleaned/' + filename.split('/')[-1].split('.')[0] + '.ks'
-##        with open(filename) as f:
-##            l = [i for i in f.readlines() if not i.startswith('#') and not i.startswith('NA')]
-##
-##        l = [\
-##        i.split('\t')[0]+'\t' \
-##        +'-'.join(i.split('\t')[4:6])+'\t' \
-##        +'-'.join(i.split('\t')[8:10]) \
-##        for i in l]
-##
-##
-##        with open(saveName,'w') as f:
-##            f.write('\n'.join(l))
+def getGeneCount():
+    savePath = 'ks/geneCount.txt'
+    with open(savePath,'w') as f:
+        f.write('id,geneCount,name\n')
+    for filename in glob('ks/fasta/*.*'):
+        with open(filename) as f: 
+            f.seek(-5555,2)
+            count = f.readlines()[-2].split('||')[-1].rstrip()
+            gid = filename.split('/')[-1].split('-')[0]
+            print filename
+            print gid
+            print 'gene count:', count
+        with open('ks/geneCount.txt','a') as f:
+            f.write(gid+','+count+',\n')
 
+##getGeneCount()
+
+def cleanKS():
+    ##genomes (IDs) of interest    
+    gids = ['11691', '7057', '28918', '25571', '4242']
+
+    for filename in glob('ks/real/*.ks'):
+    ##    get genome IDs from filename
+        g1, g2 = filename.split('/')[-1].split('.')[0].split('_')
+    ##    if this file is of interest
+        if g1 in gids and g2 in gids:
+            
+            saveName = 'ks/cleaned/' + g1 + '_' + g2 + '.ks'
+            with open(filename) as f:
+                l = [i for i in f.readlines() \
+                             if not i.startswith('#') \
+                                 and not i.startswith('NA')\
+                                 and not i.startswith('undef')\
+                     ]
+
+            l = [\
+            i.split('\t')[0]+'\t' \
+            +'-'.join(i.split('\t')[4:6])+'\t' \
+            +'-'.join(i.split('\t')[8:10]) \
+            for i in l]
+
+
+            with open(saveName,'w') as f:
+                f.write('\n'.join(l))
+
+
+cleanKS()
