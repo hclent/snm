@@ -1,4 +1,5 @@
 from glob import glob
+import os
 
 def getGeneCount():
     savePath = 'ks/geneCount.txt'
@@ -17,10 +18,14 @@ def getGeneCount():
 
 ##getGeneCount()
 
-def cleanKS():
-    ##genomes (IDs) of interest    
-    gids = ['11691', '7057', '28918', '25571', '4242']
 
+def cleanKS(gids = ['11691', '7057', '28918', '25571', '4242']):
+    '''
+        gids - genomes (IDs) of interest
+    '''
+    for f in glob('ks/cleaned/*.*'):
+        os.remove(f)
+    
     for filename in glob('ks/real/*.ks'):
     ##    get genome IDs from filename
         g1, g2 = filename.split('/')[-1].split('.')[0].split('_')

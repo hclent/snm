@@ -7,9 +7,13 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
 
-from kernel import kernel,k
-
+from kernel import kernel
+from clean import cleanKS
 np.set_printoptions(precision=4)
+
+interest = ['11691', '7057', '28918','25571', '4242']
+cleanKS(interest)
+
 
 path = 'ks/cleaned/*.ks'
 files = glob(path)
@@ -39,21 +43,24 @@ for i in genomeIDs:
     
 print x
 
-pca = PCA(n_components=2)
+pca = PCA(n_components=3)
 pca.fit(x)
 print 'pca ratio', pca.explained_variance_ratio_
 
-fig = plt.figure()
-ax = fig.add_subplot(121, projection = '3d')
-ax.scatter(x.iloc[:,0],x.iloc[:,1],x.iloc[:,2], color = 'bbrr')
-ax = fig.add_subplot(122)
 xCap = pca.transform(x)
 print xCap
-ax.scatter(xCap[:,0],xCap[:,1], color='bbrr')
+
+fig = plt.figure()
+ax = fig.add_subplot(121, projection = '3d')
+ax.scatter(xCap[:,0],xCap[:,1],xCap[:,2], color = 'rrbbb')
+ax = fig.add_subplot(122)
+
+ax.scatter(xCap[:,0],xCap[:,1], color='rrbbb')
 ax.axis('square')
 
 names = genomeInfo['name']
 for pt,gID in zip(xCap, genomeIDs):
     ax.text(pt[0],pt[1],names[gID])
-    
+
+##plt.savefig("test.svg")
 plt.show()
