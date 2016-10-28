@@ -11,7 +11,7 @@ from kernel import kernel
 from clean import cleanKS
 np.set_printoptions(precision=4)
 
-interest = ['11691', '7057', '28918','25571', '4242']
+interest = ['11691', '25571','7057','28918','4242','28814']
 cleanKS(interest)
 
 
@@ -23,7 +23,7 @@ genomeIDs = [int(g) for g in genomeIDs]
 
 print genomeIDs
 
-x = pd.DataFrame(columns=genomeIDs, index=genomeIDs)
+x = pd.DataFrame(columns=genomeIDs, index=genomeIDs, data=0.0)
 
 for f in files:
     print '_'*60
@@ -35,7 +35,7 @@ for f in files:
     x[genA][genB] = ki
     x[genB][genA] = ki
 
-genomeInfo = pd.read_csv('ks/geneCount.txt',
+genomeNames = pd.read_csv('ks/tags.txt',
                          index_col = 'id')
 
 for i in genomeIDs:
@@ -52,24 +52,24 @@ print xCap
 
 fig = plt.figure()
 ax = fig.add_subplot(121, projection = '3d')
-ax.scatter(xCap[:,0],xCap[:,1],xCap[:,2], color = 'rrbbb')
-##limit = 1
-##ax.set_xlim(-limit, limit)
-##ax.set_ylim(-limit, limit)
-##ax.set_zlim(-limit, limit)
-ax.set_xlabel('x1')
-ax.set_ylabel('x2')
-ax.set_zlabel('x3')
+ax.scatter(xCap[:,0],xCap[:,1],xCap[:,2], color = 'bbbbrb')
+for pt,gID in zip(xCap, genomeIDs):
+    ax.text(pt[0],pt[1],pt[2],genomeNames['tag'][gID])
+limit = np.max(np.abs(xCap))
+ax.set_xlim(-limit, limit)
+ax.set_ylim(-limit, limit)
+ax.set_zlim(-limit, limit)
+ax.set_xlabel('1st')
+ax.set_ylabel('2nd')
+ax.set_zlabel('3rd')
 
 
 ax = fig.add_subplot(122)
-ax.scatter(xCap[:,0],xCap[:,1], color='rrbbb')
+ax.scatter(xCap[:,0],xCap[:,1], color='bbbbrb')
 ax.axis('square')
-
-
-names = genomeInfo['name']
 for pt,gID in zip(xCap, genomeIDs):
-    ax.text(pt[0],pt[1],names[gID])
+    ax.text(pt[0],pt[1],genomeNames['tag'][gID])
+
 
 
 ##plt.savefig("test.svg")

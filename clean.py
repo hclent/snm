@@ -16,7 +16,7 @@ def getGeneCount():
         with open('ks/geneCount.txt','a') as f:
             f.write(gid+','+count+',\n')
 
-##getGeneCount()
+getGeneCount()
 
 
 def cleanKS(gids = ['11691', '7057', '28918', '25571', '4242']):
@@ -51,4 +51,4 @@ def cleanKS(gids = ['11691', '7057', '28918', '25571', '4242']):
                 f.write('\n'.join(l))
 
 
-cleanKS()
+##cleanKS()
